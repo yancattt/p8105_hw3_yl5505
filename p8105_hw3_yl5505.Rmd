@@ -33,6 +33,7 @@ summarize(ny_noaa, across(everything(), ~mean(is.na(.))))
 -- There are many columns with missing data. tmax and tmin have about 44% data missing, snow has 15%, and snwd has 23%. Missing data could cause bias or make the dataset less reliable for certain analyses. 
 
 ## Data cleaning
+- create new variables
 ```{r}
 noaa_cleaned = ny_noaa |>
   mutate(
@@ -42,7 +43,25 @@ noaa_cleaned = ny_noaa |>
   )
 noaa_cleaned
 ```
+- unit conversion 
+```{r}
+noaa_cleaned = ny_noaa |>
+  mutate(
+     tmax = as.numeric(tmax) / 10,
+    tmin = as.numeric(tmin) / 10,
+    prcp = as.numeric(prcp) / 10
+  )
+noaa_cleaned
+```
+- most common snowfall value
+```{r}
+noaa_cleaned = ny_noaa |>
+  count(snow) |>
+  arrange(desc(n))
 
+noaa_cleaned
+```
+-- The most commonly observed snowfall value is 0 mm, it mean that on most days there was no snowfall recorded. It is reasonable becasue New York does not snow a lot considering its location and geography. 
 
 
 
