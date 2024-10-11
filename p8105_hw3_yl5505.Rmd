@@ -15,12 +15,32 @@ data("ny_noaa")
 ## Overview
 
 ```{r}
+ny_noaa
+
 summarize(ny_noaa, rows = n(), columns = ncol(ny_noaa))
 
 summarize(ny_noaa, across(everything(), ~mean(is.na(.))))
-
 ```
 
 -- This dataset is a weather dataset, it has 2595176 rows and 7 variables(id       date prcp snow snwd tmax tmin). Key variables are station id, date, snowfall, snowdepth, minimum and maximum daily temperature. 
 -- There are many columns with missing data. tmax and tmin have about 44% data missing, snow has 15%, and snwd has 23%. Missing data could cause bias or make the dataset less reliable for certain analyses. 
+
+## Data cleaning
+```{r}
+noaa_cleaned = ny_noaa |>
+  mutate(
+    year = as.numeric(format(date, "%Y")),
+    month = as.numeric(format(date, "%m")),
+    day = as.numeric(format(date, "%d"))
+  )
+noaa_cleaned
+```
+
+
+
+
+
+
+
+
 
