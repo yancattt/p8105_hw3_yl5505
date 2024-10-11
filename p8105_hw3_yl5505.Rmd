@@ -1,0 +1,25 @@
+---
+title: "p8105_hw3_yl5505"
+author: "Yan Li"
+date: "2024-10-11"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(p8105.datasets)
+data("ny_noaa")
+```
+# Problem 1
+
+## Overview
+
+```{r}
+summarize(ny_noaa, rows = n(), columns = ncol(ny_noaa))
+
+summarize(ny_noaa, across(everything(), ~sum(is.na(.))))
+
+```
+
+This dataset is a weather dataset, it has 2595176 rows and 7 variables(id       date prcp snow snwd tmax tmin).
+
