@@ -5,9 +5,33 @@ date: "2024-10-11"
 output: github_document
 ---
 
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
-library(dplyr)
+library(ggridges)
+library(patchwork)
+library(knitr)
+library(p8105.datasets)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+```{r}
 library(p8105.datasets)
 data("ny_noaa")
 ```
@@ -74,22 +98,10 @@ noaa_cleaned
 ```{r}
 hw_covar = read_csv("nhanes_covar.csv",skip = 4 )|>
   janitor::clean_names()
+
 hw_accel = read_csv("nhanes_accel.csv")|>
   janitor::clean_names()
 
-hw_accel
-hw_covar
-```
-
-## Data cleaning
-```{r}
-hw_covar|>
-  filter(age >= 21) |>
-  drop_na()|>
-  mutate(
-    sex = factor(sex, levels = c(1, 2), labels = c("male", "female")),
-    education = factor(education, levels = c(1, 2, 3), labels = c("Less than high school", "High school equivalent", "More than high school"))
-  )
 ```
 - merge two dataset
 ```{r}
@@ -97,29 +109,53 @@ hw_ac = inner_join(hw_accel, hw_covar, by = "seqn")
 hw_ac
 ```
 
+```{r}
+hw_ac_cleaned = hw_ac |>
+  filter(age >= 21) |>
+  drop_na()|>
+  mutate(
+    sex = factor(sex, levels = c(1, 2), labels = c("male", "female")),
+    education = factor(education, levels = c(1, 2, 3), labels = c("Less than high school", "High school equivalent", "More than high school"))
+  )
+```
+
+
+
+
 ## create table for the number of men and women in each education category
 ```{r}
-hw_ac |>
+edu_table = hw_ac_cleaned |>
   group_by(education, sex) |>
-  summarize(count = n()) |>
-  pivot_wider(names_from = sex, values_from = count)
- 
+  summarize(count = n(), .groups = "drop") |>
+  pivot_wider(names_from = sex, values_from = count, values_fill = 0)
+
+edu_table|>kable()
 ```
 
 ## create plot
 ```{r}
-ggplot(hw_ac, aes(x = age, fill = sex)) +
+ggplot(hw_ac_cleaned, aes(x = age, fill = sex)) +
   geom_histogram(binwidth = 5, alpha = 0.7, position = "dodge") +
-  facet_grid(~ education) +
+  facet_wrap(~ education) +
+  scale_fill_manual(values = c("male" = "#1f77b4", "female" = "#ff7f0e")) +
   labs(
     title = "Age Distribution by Education Level and Gender",
     x = "Age",
     y = "Count",
     fill = "Gender"
-  ) +
-  theme_minimal()
+  )
+```
+- The table shows the gender distribution across education levels,and the "High school equivalent" group has fewer females compared to males.
+- The histogram shows that, in "More than high school", the age distribution is more concentrated, with a visible peak in the 40-45 age range for both men and women.
+
+## Total activity Plot
+```{r}
+
 
 ```
+
+
+
 
 
 
