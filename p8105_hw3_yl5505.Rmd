@@ -273,7 +273,17 @@ bike_tidy |>
 -July shows much higher ride counts compared to January.
 -There is a clear increase in the number of rides between 2020 and 2024 for both casual riders and members.
 
-###
+### 5 most popular starting stations for July 2024
+```{r}
+bike_tidy |>
+  filter(year == 2024, month == "July") |>
+  group_by(start_station_name) |>
+  summarize(total_rides = n(), .groups = "drop") |>
+  arrange(desc(total_rides)) |>
+  slice_head(n = 5)|>
+  knitr::kable()
+```
+
 
 
 
