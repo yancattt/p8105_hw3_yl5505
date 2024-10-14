@@ -203,6 +203,51 @@ ac_clean |>
     color = "Gender"
   )
 ```
+-Both genders have similar low activity levels during nighttime hours, likely reflecting sleep.
+-Compare to males, females show consistently higher activity levels during the active parts of the day, especially during morning and evening peaks.
+
+# Problem 3
+
+## Import datasets
+```{r}
+jan2020 =
+  read_csv(file = "./citibike/Jan 2020 Citi.csv", na = c(".", "NA", ""))|>
+  janitor::clean_names()|>
+  mutate(
+    year = 2020,
+    month = "January"
+  )
+
+jan2024 =
+  read_csv(file = "./citibike/Jan 2024 Citi.csv", na = c(".", "NA", ""))|>
+  janitor::clean_names()|>
+  mutate(
+    year = 2024,
+    month = "January"
+  )
+
+july2020 =
+  read_csv(file = "./citibike/July 2020 Citi.csv", na = c(".", "NA", ""))|>
+  janitor::clean_names()|>
+  mutate(
+    year = 2020,
+    month = "July"
+  )
+
+july2024 =
+  read_csv(file = "./citibike/July 2024 Citi.csv", na = c(".", "NA", ""))|>
+  janitor::clean_names()|>
+  mutate(
+    year = 2024,
+    month = "July"
+  )
+```
+## Combine 3 dataset
+```{r}
+bike_com = 
+  bind_rows(jan2020,july2020,jan2024,july2024)|>
+  relocate(ride_id, year,month, weekdays)
+```
 
 
 
