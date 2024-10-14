@@ -242,13 +242,38 @@ july2024 =
     month = "July"
   )
 ```
-## Combine 3 dataset
+## Combine 4 dataset
 ```{r}
 bike_com = 
   bind_rows(jan2020,july2020,jan2024,july2024)|>
   relocate(ride_id, year,month, weekdays)
+
 ```
 
+## Clean dataset
+```{r}
+bike_tidy = bike_com |>
+  mutate(
+    member_casual = as.factor(member_casual),
+    weekdays = factor(weekdays, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")),
+    rideable_type= factor(rideable_type),
+    month = factor(month, levels = c("January", "July"))
+  )
+```
+
+## total number of rides in year/month
+```{r}
+bike_tidy |>
+  group_by(year, month, member_casual) |>
+  summarize(total_rides = n(), .groups = "drop") |>
+  pivot_wider(names_from = member_casual, values_from = total_rides)|>
+  knitr::kable()
+```
+-Members are the primary users of the Citi Bike system.
+-July shows much higher ride counts compared to January.
+-There is a clear increase in the number of rides between 2020 and 2024 for both casual riders and members.
+
+###
 
 
 
