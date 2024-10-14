@@ -7,6 +7,7 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+library(dplyr)
 library(p8105.datasets)
 data("ny_noaa")
 ```
@@ -63,6 +64,62 @@ noaa_cleaned
 ```
 -- The most commonly observed snowfall value is 0 mm, it mean that on most days there was no snowfall recorded. It is reasonable becasue New York does not snow a lot considering its location and geography. 
 
+## Two-panel plot
+```{r}
+
+
+```
+
+#Problem 2
+```{r}
+hw_covar = read_csv("nhanes_covar.csv",skip = 4 )|>
+  janitor::clean_names()
+hw_accel = read_csv("nhanes_accel.csv")|>
+  janitor::clean_names()
+
+hw_accel
+hw_covar
+```
+
+## Data cleaning
+```{r}
+hw_covar|>
+  filter(age >= 21) |>
+  drop_na()|>
+  mutate(
+    sex = factor(sex, levels = c(1, 2), labels = c("male", "female")),
+    education = factor(education, levels = c(1, 2, 3), labels = c("Less than high school", "High school equivalent", "More than high school"))
+  )
+```
+- merge two dataset
+```{r}
+hw_ac = inner_join(hw_accel, hw_covar, by = "seqn")
+hw_ac
+```
+
+## create table for the number of men and women in each education category
+```{r}
+hw_ac |>
+  group_by(education, sex) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = sex, values_from = count)
+ 
+```
+
+## create plot
+```{r}
+ggplot(hw_ac, aes(x = age, fill = sex)) +
+  geom_histogram(binwidth = 5, alpha = 0.7, position = "dodge") +
+  facet_grid(~ education) +
+  labs(
+    title = "Age Distribution by Education Level and Gender",
+    x = "Age",
+    y = "Count",
+    fill = "Gender"
+  ) +
+  theme_minimal()
+
+```
 
 
 
