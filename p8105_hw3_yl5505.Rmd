@@ -273,7 +273,7 @@ bike_tidy |>
 -July shows much higher ride counts compared to January.
 -There is a clear increase in the number of rides between 2020 and 2024 for both casual riders and members.
 
-### 5 most popular starting stations for July 2024
+## 5 most popular starting stations for July 2024
 ```{r}
 bike_tidy |>
   filter(year == 2024, month == "July") |>
@@ -284,6 +284,21 @@ bike_tidy |>
   knitr::kable()
 ```
 
+## the effects of day of the week, month, and year on median ride duration
+```{r}
+bike_tidy |>
+  group_by(year, month, weekdays)|>
+  summarize(median_ride_duration = median(duration))|>
+  ggplot(aes(x=weekdays, y=median_ride_duration, color = month, group = month))+
+  geom_point()+geom_line()+
+  facet_grid(month~year)+
+  labs(
+    title = "Effects of Day of the Week, Month, and Year on Median Ride Duration",
+    x = "Day of the Week",
+    y = "Median Ride Duration ",
+    color = "Month"
+  )
+```
 
 
 
