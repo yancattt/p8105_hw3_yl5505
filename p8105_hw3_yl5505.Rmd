@@ -287,20 +287,18 @@ bike_tidy |>
 ## the effects of day of the week, month, and year on median ride duration
 ```{r}
 bike_tidy |>
-  group_by(year, month, weekdays)|>
-  summarize(median_ride_duration = median(duration))|>
-  ggplot(aes(x=weekdays, y=median_ride_duration, color = month, group = month))+
-  geom_point()+geom_line()+
-  facet_grid(month~year)+
+  group_by(year, month, weekdays) |>
+  summarize(median_dur = median(duration, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(x = weekdays, y = median_dur, color = month, shape = month)) +
+  geom_point(size = 3, alpha = 0.8) +  
+  geom_smooth(aes(group = month),method = "loess", se = FALSE, size = 1) + 
+  facet_wrap(~ year) + 
   labs(
     title = "Effects of Day of the Week, Month, and Year on Median Ride Duration",
     x = "Day of the Week",
-    y = "Median Ride Duration ",
-    color = "Month"
+    y = "Median Ride Duration",
+    color = "Month",
+    shape = "Month"
   )
 ```
-
-
-
-
 
